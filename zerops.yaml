@@ -13,18 +13,6 @@ zerops:
         - port: 8080
           httpSupport: true
 
-  - setup: consumer
-    extends: api
-    run:
-      base: go@1
-      start: ./main
-
-  - setup: worker
-    extends: api
-    run:
-      base: go@1
-      start: ./main
-
   - setup: temporal
     run:
       base: docker@latest
