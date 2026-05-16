@@ -1,0 +1,49 @@
+zerops:
+  - setup: flexprice-api
+    build:
+      base: go@1
+      buildCommands:
+        - go build -o main ./cmd/server/main.go
+      deployFiles:
+        - main
+    run:
+      base: go@1
+      start: ./main
+      ports:
+        - port: 8080
+          httpSupport: true
+
+  - setup: flexprice-consumer
+    extends: flexprice-api
+    run:
+      base: go@1
+      start: ./main
+
+  - setup: flexprice-worker
+    extends: flexprice-api
+    run:
+      base: go@1
+      start: ./main
+
+  - setup: temporal
+    run:
+      base: docker@latest
+      prepareCommands:
+        - docker image pull temporalio/auto-setup:1.26.2
+      start: |
+        docker run --network=host \
+          -e ENABLE_ES=false \
+          -e DB=postgres12 \
+          -e DB_PORT=5432 \
+          -e DB_USER=root \
+          -e DB_PWD=${postgres_password} \
+          -e DB_NAME=temporal \
+          -e DB_HOST=postgres \
+          -e POSTGRES_USER=root \
+          -e POSTGRES_PWD=${postgres_password} \
+          -e POSTGRES_SEEDS=postgres \
+          -e TEMPORAL_PERSISTENCE_SCHEMA_DIR=/etc/temporal/schema/postgresql/v96/temporal/versioned \
+          temporalio/auto-setup:1.26.2
+      ports:
+        - port: 7233
+          httpSupport: false
