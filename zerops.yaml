@@ -6,7 +6,6 @@ zerops:
         - go build -o main ./cmd/server/main.go
       deployFiles:
         - main
-        - config
         - internal/config
     run:
       base: go@1
@@ -14,6 +13,7 @@ zerops:
       ports:
         - port: 8080
           httpSupport: true
+
   - setup: temporal
     run:
       base: docker@latest
