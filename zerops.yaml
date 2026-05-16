@@ -1,5 +1,5 @@
 zerops:
-  - setup: flexprice-api
+  - setup: api
     build:
       base: go@1
       buildCommands:
@@ -13,14 +13,14 @@ zerops:
         - port: 8080
           httpSupport: true
 
-  - setup: flexprice-consumer
-    extends: flexprice-api
+  - setup: consumer
+    extends: api
     run:
       base: go@1
       start: ./main
 
-  - setup: flexprice-worker
-    extends: flexprice-api
+  - setup: worker
+    extends: api
     run:
       base: go@1
       start: ./main
